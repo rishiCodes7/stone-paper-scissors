@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Game</title>
+    <style>
+        body {
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #ff0000, #1900ff);
+        color: #fff;
+        }
+        h2{
+            text-align: center;
+            font-size: xx-large;
+            text-shadow:2px 2px 5px black;
+        }
+        p{
+            text-align: center;
+            font-size: x-large;
+        }
+        button{
+            height: 80px;
+            width: 120px;
+            border: none;
+            border-radius: 10px;
+            font-size: large;
+            background-color: rgba(255, 182, 193,0);
+        }
+        button:hover{
+            cursor: pointer;
+           
+        }
+        .buttons{
+            display: flex;
+            justify-content: space-around;
+        }
+        .rAndR{
+            margin-top: 2%;
+            display: flex;
+            justify-content:space-evenly;
+        }
+        .button-images{
+            height: 80px;
+            width: 80px;
+        }
+        .button-images:hover{
+            transform: scale(1.3);
+            transition: all 0.3s ease-in-out;
+            cursor: pointer; 
+            rotate: -20deg;
+            transition: 0.3s;
+        }
+        .button-images:active{
+            transform: scale(1.5);
+            transition: all 0.3s ease-in-out;
+            rotate: 20deg;
+            transition: 0.3s;
+        }
+        .scoreboard {
+      margin: 20px 0;
+      background: rgba(255,255,255,0.1);
+      padding: 15px 30px;
+      border-radius: 15px;
+      display: flex;
+      gap: 40px;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    </style>
+</head>
+<body >
+    <h2>Stone Paper Scissors Game</h2>
+    <div class="scoreboard">
+    <div id="player-score">Player: 0</div>
+    <div id="computer-score">Computer: 0</div>
+  </div>
+    <div class="buttons">
+        <button onclick=" Choice('Stone'); "><img src="./img/stone-removebg-preview.png" alt="Stone image" class="button-images"></button>
+
+        <button onclick=" Choice('Paper'); "><img src="./img/p-removebg-preview.png" alt="Paper image" class="button-images"></button>
+
+        <button onclick=" Choice('Scissors'); "><img src="./img/sc-removebg-preview.png" class="button-images" alt=""></button>
+    </div>
+    <div class="rAndR">
+        <button id="restart" onclick="
+                restart();
+            ">Restart</button>
+        <button id="reset" onclick="
+                reset();
+            ">Reset
+        </button>
+    </div>
+    <div id="result-area">
+        <p id="records"></p>
+        <p id="chosen"></p>
+    </div>
+    <script>
+        let p=document.querySelector('#chosen');
+        let r=document.querySelector('#records');
+        current_score = { 
+            win : 0,
+            tie : 0,
+            lose : 0,
+        };
+        overall_score =JSON.parse(localStorage.getItem('overall_score')) || { //object creation & use of Guard method to initialize the overall_score
+                win : 0,
+                tie : 0,
+                lose : 0,
+        };
+        function overall_score_update(){
+        localStorage.setItem('overall_score',JSON.stringify(overall_score));
+        }
+        function initial_text(){
+            return `Current Result : Win : ${current_score.win} Tie : ${current_score.tie} Lose : ${current_score.lose}  \nOverall Result : Win : ${overall_score.win} Tie : ${overall_score.tie} Lose : ${overall_score.lose}`;
+        }
+        function Choice(user_choice){
+            const choices = ['Stone', 'Paper', 'Scissors'];
+            const userIndex = choices.indexOf(user_choice);
+            const computerIndex = Math.floor(Math.random() * 3);
+            const computer_choice = choices[computerIndex];
+            let result = '';
+            if (userIndex === computerIndex) {
+                result = "It's a tie!";
+                current_score.tie++;
+                overall_score.tie++;
+            } else if ((userIndex - computerIndex + 3) % 3 === 1) {
+                result = "You Win!";
+                current_score.win++;
+                overall_score.win++;
+            } else {
+                result = "You Lose!";
+                current_score.lose++;
+                overall_score.lose++;
+            }
+            overall_score_update();
+            p.innerText = `You chose: ${user_choice}\nComputer chose: ${computer_choice}\n${result}`;
+            r.innerText = initial_text();
+        }
+        function restart(){
+             current_score = { 
+                win : 0,
+                tie : 0,
+                lose : 0,
+            };
+            p.innerText = '';
+            r.innerText = initial_text();
+        }
+        function reset(){
+            localStorage.clear();
+            overall_score = {
+                win : 0,
+                tie : 0,
+                lose : 0,
+            };
+           restart();
+        }  
+    </script>
+</body>
+</html>
